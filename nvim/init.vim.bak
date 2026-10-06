@@ -1,0 +1,413 @@
+set autoindent
+set backspace=indent,eol,start "set backspace function
+set hlsearch "highlight searched things
+set incsearch "incremental search
+set ignorecase "ignore case
+set autoread "auto read when file is changed from outside
+set nu "show line number
+set showmatch "show maching braces
+set gfn=Courier\ 12
+set t_Co=256
+set title
+set ruler "show current position
+set expandtab
+set tabstop=2
+set shiftwidth=2
+" Default to not read-only in vimdiff
+set noro
+
+set mouse=
+set nofixendofline
+set nowrap
+" highlight the current line
+set cursorline
+
+" For copilot chat
+set modifiable
+set noreadonly
+
+let g:ctrlsf_auto_focus = { "at": "start" }
+let g:ctrlsf_auto_preview = 1
+let g:ctrlsf_fold_result = 1
+let g:ctrlsf_populate_qflist = 1
+let g:ctrlsf_default_view_mode = 'compact'
+let g:ctrlsf_mapping = {
+      \ "next": "n",
+      \ "prev": "N",
+      \ }
+
+let g:DirDiffAddArgs = "--strip-trailing-cr"
+
+" fzf
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9, 'border': 'sharp' } }
+let g:fzf_preview_window = []
+
+" vim-gutentags ctags
+let g:gutentags_enabled = 1
+let g:gutentags_generate_on_write = 1
+let g:gutentags_generate_on_missing = 1
+let g:gutentags_generate_on_empty_buffer = 1
+let g:gutentags_project_root = ['.git']
+let g:gutentags_filetypes = ['c', 'cpp', 'h', 'S']
+let g:gutentags_exclude_file_patterns = ['.*\.log$', '.*\.md$', '.*\.json$', '.*\.py$', '.*\.sh$']
+let g:gutentags_exclude_dirs = ['.git', 'node_modules', 'build', 'Build', 'bin', 'obj', '.vscode']
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+let g:gutentags_ctags_extra_args = [
+      \ '--fields=+ailmnzS',
+      \ '--extras=+q',
+      \ '--languages=C',
+      \ '--output-format=e-ctags'
+      \ ]
+
+" neovim fzf ignore directory
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --no-ignore-vcs --glob "!node_modules" --glob "!.git" --glob "!Build"'
+
+let g:copilot_enterprise_uri = 'https://github.com'
+"let g:copilot_no_tab_map = 1
+
+
+nnoremap <silent> <F1>  :set list<CR>
+nnoremap <silent> <F2>  :set nolist<CR>
+nnoremap <silent> <F3>  :noh<CR>
+nnoremap <silent> <F4>  :CtrlSFToggle<CR>
+" nerdtree
+nnoremap <silent> <F5>  :NERDTree<CR>
+nnoremap <silent> <F6>  :NERDTreeToggle<CR>
+nnoremap <silent> <F7>  :set number<CR>
+nnoremap <silent> <F8>  :set nonumber<CR>
+" float terminal
+nnoremap <silent> <F9>  :FloatermNew --height=0.9 --width=0.9<CR>
+nnoremap <silent> <F10> :FloatermHide<CR>
+" Tags toggle
+nnoremap <silent> <F11> :Vista!!<CR>
+" CtrlSFPrompt
+nnoremap <Tab> :CtrlSF ""<Left>
+
+" function previous/next
+nnoremap <silent> ]f    /^{<CR>
+nnoremap <silent> [f    ?^{<CR>
+
+
+" Telescope
+"nnoremap ff : <cmd>Telescope find_files<cr>
+"nnoremap ff : GFiles<cr>
+nnoremap ff : Files<cr>
+nnoremap fe : <cmd>Telescope live_grep<cr>
+nnoremap fs : <cmd>Telescope git_status<cr>
+nnoremap S : <cmd>Telescope buffers<cr>
+nnoremap fw : CtrlSF <C-R><C-W><CR><cr>
+"nnoremap fd : CtrlSF -T "h" -R (^\|}\s*\|^#define\s+)<C-R><C-W><CR><cr>
+nnoremap cd : ts <C-R><C-W><CR>
+nnoremap fd : CtrlSF -G "*.h" -R (^\|}\s*\|^#define\s+)<C-R><C-W><CR><cr>
+nnoremap fc : CtrlSF -G "*.c" -R ^<C-R><C-W><CR><cr>
+nnoremap fh : <cmd>Telescope help_tags<cr>
+
+" Close all other split panels
+nnoremap D :only <cr>
+
+" Gitsigns
+nnoremap [[ :Gitsigns prev_hunk <cr>
+nnoremap ]] :Gitsigns next_hunk <cr>
+nnoremap ]b :Gitsigns blame_line <cr>
+nnoremap ]h :Gitsigns preview_hunk <cr>
+nnoremap ]r :Gitsigns reset_hunk <cr>
+
+" paste with auto indent
+nnoremap p p`[v`]=0
+
+" set working dir to current open file
+"nnoremap ]f :cd %:h <cr>
+
+" Copilot
+" Open a new Copilot Chat window
+nnoremap cc :CopilotChatToggle <cr>
+
+" require('lspconfig').clangd.setup{}
+
+" Send visual selection to CopilotChat
+xnoremap cv :<C-u>lua require('CopilotChat').open({ context = vim.fn.getreg('v') })<CR>
+
+call plug#begin()
+" The default plugin directory will be as follows:
+"   - Vim (Linux/macOS): '~/.vim/plugged'
+"   - Vim (Windows): '~/vimfiles/plugged'
+"   - Neovim (Linux/macOS/Windows): stdpath('data') . '/plugged'
+" You can specify a custom plugin directory by passing it as the argument
+"   - e.g. `call plug#begin('~/.vim/plugged')`
+"   - Avoid using standard Vim directory names like 'plugin'
+
+" Make sure you use single quotes
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+"Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+
+" Using a non-default branch
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+Plug 'fatih/vim-go', { 'tag': '*' }
+
+" Plugin options
+Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+
+" Plugin outside ~/.vim/plugged with post-update hook
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+
+" telescope
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'kyazdani42/nvim-web-devicons'
+
+" nvim-cmp
+"Plug 'neovim/nvim-lspconfig'
+"Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+
+" Floating terminal
+Plug 'voldikss/vim-floaterm'
+
+" Git diffview Plug
+Plug 'nvim-lua/plenary.nvim'
+
+" Tokyo Night Plug
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+
+Plug 'dyng/ctrlsf.vim'
+
+" DIR diff
+Plug 'will133/vim-dirdiff'
+
+" Git - gitsigns
+Plug 'lewis6991/gitsigns.nvim'
+
+" cappyzawa/trim.nvim
+Plug 'cappyzawa/trim.nvim'
+
+" comment
+Plug 'numToStr/Comment.nvim'
+
+" A Vim plugin that manages your tag files
+Plug 'ludovicchabant/vim-gutentags'
+
+" Viewer & Finder for LSP symbols and tags
+Plug 'liuchengxu/vista.vim'
+
+"Auto pair"
+Plug 'cohama/lexima.vim'
+
+" Snippets
+Plug 'rafamadriz/friendly-snippets'
+
+" copilot
+Plug 'github/copilot.vim'
+
+" copilot-cmp
+Plug 'zbirenbaum/copilot-cmp'
+
+" CopilotChat
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
+
+call plug#end()
+
+" nvim-cmp
+set completeopt=menu,menuone,noselect
+
+lua << EOF
+
+-- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+-- To get fzf loaded and working with telescope, you need to call
+-- load_extension, somewhere after setup function:
+  require('telescope').setup{
+    defaults = {
+          results_title = false,
+          layout_config = {
+            width = { 0.5, min = 123 },
+            -- width = { 0.5, max = 70, min = 123 },
+            horizontal = {
+              preview_cutoff = 0,
+            }
+          },
+          find_command = { "fd", "-t=f", "-a" },
+        path_display = { "absolute" },
+          wrap_results = true
+    },
+      extensions = {
+          fzf_writer = {
+              minimum_grep_characters = 3,
+              minimum_files_characters = 3,
+
+              -- Disabled by default.
+              -- Will probably slow down some aspects of the sorter, but can make color highlights.
+              -- I will work on this more later.
+              use_highlighter = true
+          }
+      }
+  }
+
+
+--require("lspconfig").clangd.setup({
+--  on_attach = on_attach,
+--  flags = lsp_flags,
+--})
+
+--require('lspconfig')['pyright'].setup{
+--    on_attach = on_attach,
+--    flags = lsp_flags,
+--}
+
+  require('gitsigns').setup({
+      current_line_blame = false,
+      current_line_blame_opts = {
+          virt_text_pos = 'eol',
+          delay = 1000,
+    },
+  })
+
+  require('Comment').setup({
+      opleader = {
+          ---Line-comment keymap
+          line = 'fl',
+          ---Block-comment keymap
+          block = 'fb',
+      }
+  })
+
+  require('cmp').setup({
+    sources = {
+      { name = "copilot", group_index = 2, priority = 100 },
+      { name = "nvim_lsp", group_index = 2, priority = 90 },
+      { name = "luasnip", group_index = 2, priority = 80 },
+    },
+  })
+
+--require('trim').setup({
+--  disable = {"markdown"},
+--})
+
+require("CopilotChat").setup({
+      window = {
+      layout = 'float',
+      width  = math.floor(vim.o.columns * 0.8),  -- 80% width
+      height = math.floor(vim.o.lines   * 0.8),  -- 70% height
+      --width = 80, -- Fixed width in columns
+      --height = 20, -- Fixed height in rows
+      border = 'rounded', -- 'single', 'double', 'rounded', 'solid'
+      title = '🤖 AI Assistant',
+      zindex = 100, -- Ensure window stays on top
+    },
+
+    headers = {
+      user = '👤 You',
+      assistant = '🤖 Copilot',
+      tool = '🔧 Tool',
+    },
+
+    separator = '━━',
+    auto_fold = true, -- Automatically folds non-assistant messages
+
+  })
+
+  --vim.g.copilot_no_tab_map = true
+  --vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
+
+  -- Auto-command to customize chat buffer behavior
+  vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = 'copilot-*',
+    callback = function()
+      vim.opt_local.relativenumber = false
+      vim.opt_local.number = false
+      vim.opt_local.conceallevel = 0
+    end,
+  })
+
+  vim.api.nvim_set_hl(0, 'CopilotChatHeader', {
+    fg = '#7C3AED',
+    bold = true,
+  })
+
+  vim.api.nvim_set_hl(0, 'CopilotChatSeparator', {
+    fg = '#374151',
+  })
+
+EOF
+
+colorscheme tokyonight
+highlight RedundantSpaces ctermbg=red guibg=red
+match RedundantSpaces /\s\+$/
+hi Search guifg=black guibg=yellow
